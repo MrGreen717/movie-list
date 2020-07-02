@@ -1,0 +1,15 @@
+<form action="/movies/{{movie.movies_id}}/edit", method="POST">
+
+    <h2>Update movie</h2>
+        <div class="input-field">
+            <input required type="text" name="movies" id="movies" value="{{movie.movies}}">
+        </div>
+        <div class="input-field">
+            <input type="number" step="any" name="rating" id="rating" value={{movie.rating}}>
+        </div>
+        <div class="input-field">
+            <input type="number" name="year1" id="year1" value={{movie.year1}}>
+        </div>
+
+    <button type="submit" class="btn">Update</button>
+</form>

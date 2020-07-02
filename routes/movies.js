@@ -4,8 +4,15 @@ const pool = require('../db/db')
 
 // ROUTES // 
 
+//Create page
+router.get('/add', async (req, res) => {
+    res.render('create', {
+        title: 'Add new movie'
+    })
+})
+
 //Create object
-router.post('/movies', async (req, res) => {
+router.post('/add', async (req, res) => {
     try {
         const { movies, rating, year1 } = req.body
         const newMovie = await pool.query(
@@ -13,7 +20,7 @@ router.post('/movies', async (req, res) => {
         [movies, rating, year1]
         )
         
-        res.json(newMovie.rows)
+        res.redirect('/movies')
     } catch (e) {
         console.error(e.message)
     }
@@ -23,7 +30,13 @@ router.post('/movies', async (req, res) => {
 router.get('/movies', async (req, res) => {
     try {
         const allMovies = await pool.query("SELECT * FROM movies")
-        res.json(allMovies.rows)
+        const moviesList = allMovies.rows
+        
+        res.render('index', {
+            title: 'Movies list',
+            moviesList
+        })
+        
     } catch (e) {
         console.error(e.message)
     }
@@ -33,16 +46,19 @@ router.get('/movies', async (req, res) => {
 router.get('/movies/:id', async (req, res) => {
     try {
         const { id } = req.params
-        const movie = await pool.query("SELECT * FROM movies WHERE movies_id = $1", [id])
-
-        res.json(movie.rows[0])
+        const movieGet = await pool.query("SELECT * FROM movies WHERE movies_id = $1", [id])
+        const movie = movieGet.rows[0]
+        res.render('update', {
+            title: 'Update movie',
+            movie
+        })
     } catch (e) {
         console.error(e.message)
     }
 })
 
 //Update a movie
-router.put('/movies/:id', async (req, res) => {
+router.post('/movies/:id/edit', async (req, res) => {
     try {
         const { id } = req.params
         const { movies, rating, year1 } = req.body
@@ -50,25 +66,24 @@ router.put('/movies/:id', async (req, res) => {
         "UPDATE movies SET movies = $1, rating = $2, year1 = $3 WHERE movies_id = $4", 
         [movies, rating, year1, id]
         )
-        res.json('Movie was updated')
+        res.redirect('/movies')
     } catch (e) {
         console.error(e.message)
     }
 })
 
 //Delete movie
-router.delete('/movies/:id', async (req, res) => {
+router.post('/movies/:id', async (req, res) => {
     try {
         const { id } = req.params
         const deleteMovie = await pool.query("DELETE FROM movies WHERE movies_id = $1", [
             id
         ])
 
-        res.json("Movie was deleted")
+        res.redirect('/movies')
     } catch (e) {
         console.error(e.message)
     }
 })
-
 
 module.exports = router

@@ -1,0 +1,27 @@
+<h2>Movies list</h2>
+
+{{#if moviesList.length}}
+     <ul>
+        {{#each moviesList}}
+            <li class="movies">
+                <label>
+                    <h5>{{movies}}</h5>
+                    <p>Rating: {{rating}}</p>
+                    <p>Year: {{year1}}</p>
+                </label>
+                <form action="/movies/{{movies_id}}" method="GET">
+
+                    <button class="btn btn-small" type="submit">Edit</button> 
+
+                </form>
+                <form action="/movies/{{movies_id}}" method="POST">
+
+                    <button class="btn btn-small" type="submit">delete</button> 
+
+                </form>
+            </li>
+        {{/each}}
+    </ul>
+{{else}}
+<p>No movies</p>
+{{/if}}
